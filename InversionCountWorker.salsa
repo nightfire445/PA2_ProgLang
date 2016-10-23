@@ -1,0 +1,16 @@
+module dna;
+
+/* InversionCountWork.salsa --
+* Worker for counting the number of DNA inversions
+*/
+
+behavior InversionCountWork{
+	
+
+
+
+
+
+
+}
+

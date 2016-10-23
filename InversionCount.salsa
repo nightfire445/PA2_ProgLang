@@ -1,0 +1,62 @@
+module dna;
+import java.io.*
+
+/* InversionCount.salsa -- Count the number of DNA inversions
+
+
+
+
+
+
+
+*/
+
+
+
+behavior InversionCount{
+	
+//TODO:
+/* I.o to get the input: Your program should accept a text file that contains two strings on separate lines, the first of which is the input sequence and the second the target sequence. 
+//*/
+
+// Determine # of actors,
+
+String theatersFile = "theatersFile.txt"
+
+
+
+
+ /*
+      The act(...) message handler is invoked by stand-alone
+      theaters automatically and is used to bootstrap salsa
+      programs.
+*/
+
+
+
+	void act(String args[]){
+
+	Reader fileReader = new FileReader(args[0]);
+	//Input File: 
+	//Input Sequence
+	//Target Sequence
+
+	String input_sequence = fileReader.read();
+	String target_sequence = fileReader.read();
+
+	fileReader.close();
+
+
+
+		
+
+
+
+
+	}
+
+
+}
+
+
+
