@@ -1,0 +1,50 @@
+
+module demo;
+
+
+
+/*
+
+   This behavior simply sends two print(...) messages to the
+
+   standardOutput actor.
+
+*/
+
+behavior HelloWorld {
+
+   /*
+
+      The act(...) message handler is invoked by stand-alone
+
+      theatres automatically and is used to bootstrap salsa
+
+      programs.
+
+   */
+
+   void act( String[] argv ) {
+
+      standardOutput<-print( "Hello" ) @
+
+      standardOutput<-print( "World!" );
+
+   }
+
+   /*
+
+      Notice that the above code is different from
+
+         standardOutput<-print( "Hello" );
+
+         standardOutput<-print( "World!" );
+
+      the code above uses a continuation to insure that the
+
+      world message is sent after the hello message
+
+      completes processing.
+
+   */
+
+}
