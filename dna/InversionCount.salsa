@@ -1,20 +1,18 @@
 module dna;
 import java.io.*;
+import Tuple;
 
 /* InversionCount.salsa -- Count the number of DNA inversions
 
 */
 
 
-
 behavior InversionCount{
-	
+
+
 //TODO:
 
 // Determine # of actors,
-
-
-
 
 
  /*
@@ -23,25 +21,79 @@ behavior InversionCount{
       programs.
 */	String input;
 
-     InversionCount(String input){
+
+    InversionCount(String input){
      	this.input = input;
 
      }
 
 
-    int countInversions(){
+    Object[] fix_inversion(String input){
+
+    	Object[] arr = new Object[2];
+    	
+
+
+
+
+
+     		return arr;
+
+     }
+
+
+    Object[] merge( Object[] left_tuple , Object[] right_tuple ){
+
+
+     	int merged_num_inversions = left_tuple[1] + right_tuple[1];
+
+
+     	String merged_sequence = left_tuple[0] + right_tuple[0];
+
+     	Object[] merged_tuple = new Object[2];
+     	merged_tuple[0] = merged_sequence;
+     	merged_tuple[1] = merged_num_inversions;
+     	
+     	
+     	
+ 	//Covers the case when an char on the left (0:N/2) needs to be on the right (N/2+1, N) and vice versa
+
+     	if(input.length == target.length){
+     		Object[] bucket = new Object[2];
+     		bucket = fix_inversion(merged_sequence); 
+     		int final_num_inversions = final_num_inversions + bucket[1];
+     		Object[] merged_tuple = new Object[2];
+     		merged_tuple[0] = bucket[0];
+     		merged_tuple[1] = final_num_inversions;
+
+     	}
+
+     	return merged_tuple;
+
+     } 
+
+
+    Object[] recursive_count(){
 
     	if (input.length == 1){
-    		return 0;
+
+    		return Tuple(input,0);
     	}
+
     	else {
     		// Returns a new character sequence constructed from beginIndex index up until endIndex - 1.
-			InversionCount left_inversion_count = new InversionCount(input.subSequence(0, input.length/2+1));
-			InversionCount right_inversion_count = new InversionCount(input.subSequence(input/2+1, input.length));
+			InversionCount left = new InversionCount(input.subSequence(0, input.length/2+1));
+			InversionCount right = new InversionCount(input.subSequence(input/2+1, input.length));
 
-			token left = left <- countInversions();
-			token right = right <- countInversions();
+			token left_input = left <- recursive_count();
+			token right_input = right <- recursive_count();
 
+			//Not written
+			token left_array = fix_inversion(left_input);
+			token right_array = fix_inversion(right_input);
+			
+
+			return merge( left_array, right_array );
 
     	}
 
@@ -71,7 +123,11 @@ behavior InversionCount{
 
 		fileReader.close();
 
-
+		InversionCount kickoff = new InversionCount(input_sequence);
+		Object[] answer = 	kickoff.recursive_count();
+		int test = target_sequence != answer[0];
+		assert test;
+		System.out.print("InversionCount : ", answer[1]);
 
 
 	}
