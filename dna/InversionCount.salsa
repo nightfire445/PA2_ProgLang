@@ -10,12 +10,9 @@ import java.io.*;
 behavior InversionCount{
 	
 //TODO:
-/* I.o to get the input: Your program should accept a text file that contains two strings on separate lines, the first of which is the input sequence and the second the target sequence. 
-//*/
 
 // Determine # of actors,
 
-String theatersFile = "theatersFile.txt";
 
 
 
@@ -24,30 +21,66 @@ String theatersFile = "theatersFile.txt";
       The act(...) message handler is invoked by stand-alone
       theaters automatically and is used to bootstrap salsa
       programs.
-*/
+*/	String input;
+
+     InversionCount(String input){
+     	this.input = input;
+
+     }
+
+
+    int countInversions(){
+
+    	if (input.length == 1){
+    		return 0;
+    	}
+    	else {
+    		// Returns a new character sequence constructed from beginIndex index up until endIndex - 1.
+			InversionCount left_inversion_count = new InversionCount(input.subSequence(0, input.length/2+1));
+			InversionCount right_inversion_count = new InversionCount(input.subSequence(input/2+1, input.length));
+
+			token left = left <- countInversions();
+			token right = right <- countInversions();
+
+
+    	}
+
+
+    }
 
 
 
 	void act(String args[]){
 
-	Reader fileReader = new FileReader(args[0]);
-	//Input File: 
-	//Input Sequence
-	//Target Sequence
 
-	String input_sequence = fileReader.read();
-	String target_sequence = fileReader.read();
+		if(args.length == 0){
+			
+			System.out.println("Proper Usage is: salsa dna.InversionCount input.txt");
+	        System.exit(0);
 
-	fileReader.close();
+		}
 
 
+		Reader fileReader = new FileReader(args[0]);
+		//Input File: 
+		//Input Sequence
+		//Target Sequence
 
-		
+		String input_sequence = fileReader.read();
+		String target_sequence = fileReader.read();
+
+		fileReader.close();
 
 
 
 
 	}
+
+
+
+
+
+
 
 
 }
