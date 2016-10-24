@@ -1,13 +1,7 @@
 module dna;
-import java.io.*
+import java.io.*;
 
 /* InversionCount.salsa -- Count the number of DNA inversions
-
-
-
-
-
-
 
 */
 
@@ -21,7 +15,7 @@ behavior InversionCount{
 
 // Determine # of actors,
 
-String theatersFile = "theatersFile.txt"
+String theatersFile = "theatersFile.txt";
 
 
 
