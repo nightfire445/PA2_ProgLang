@@ -45,7 +45,8 @@ behavior InversionCount {
     	token answer = kickoff <- recursive_count();
         test(answer, target_sequence) @ currentContinuation;
 		
-        System.out.print("InversionCount : ", answer );
+        System.out.print("Input, InversinCount, Target : ");
+        System.out.print(answer); 
       
 	}
 
