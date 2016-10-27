@@ -7,137 +7,14 @@ import java.util.Arrays;
 */
 
 
-behavior InversionCount{
+behavior InversionCount { 
 
+    void test(Object[] answer, char[] target_sequence){
 
-//TODO:
-
-// Determine # of actors,
-
-
- /*
-      The act(...) message handler is invoked by stand-alone
-      theaters automatically and is used to bootstrap salsa
-      programs.
-*/	char[] input;
-    char[] target;
-
-    InversionCount(char[] input, char[] target){
-     	this.input = input;
-        this.target = target;
-
-     }
-
-
-    Object[] fix_inversion(Object[] input){
-
-    	Object[] arr = new Object[3];
-        int inversion_count = 0;
-        char[] input_chars = input[0].toString().toCharArray();
-        char[] target_chars = input[2].toString().toCharArray();
-        //Input: 3 indexed array : input, #inversions, target
-
-        for(int i = 0; i < target_chars.length; i++){
-            int test = (int)target_chars[i+1];
-            if(test != 0 && target_chars[i] > target_chars[i+1]){
-
-                char target_temp = target_chars[i];
-                char input_temp_char = input_chars[i];
-
-                target_chars[i] = target_chars[i+1];
-                target_chars[i+1] = target_temp;
-
-                //need to make sure target and input correspond
-                input_chars[i] = input_chars[i+1];
-                input_chars[i+1] = input_temp_char;
-
-                //begin again at start of the array
-                i = 0;
-                inversion_count = inversion_count + 1;
-
-            }
-
-
-
-        }
-		arr[0] = input[0];
-        arr[1] = inversion_count + (int)input[1];
-        arr[2] = target;
-
-
-     	return arr;
-
-     }
-
-
-    Object[] merge( Object[] left_array , Object[] right_array){
-
-     	int merged_num_inversions = (int)left_array[1] + (int)right_array[1];
-        //Convert to string to concatenate then convert to char array
-        String left_string = String.valueOf(left_array[0]);
-        String right_string = String.valueOf(right_array[0]);
-        String left_target_string = String.valueOf(left_array[2]);
-        String right_target_string = String.valueOf(right_array[2]);
-     	char[] merged_sequence = (left_string + right_string).toCharArray();
-        char[] target_sequence = (left_target_string + right_target_string).toCharArray();
-
-     	Object[] merged_array = new Object[3];
-     	merged_array[0] = merged_sequence;
-     	merged_array[1] = merged_num_inversions;
-        merged_array[2] = target_sequence;
-     	
-     	
- 	//Covers the case when an char on the left (0:N/2) needs to be on the right (N/2+1:N) and vice versa
-
-     	if(merged_sequence.length == target_sequence.length){
-
-     		return fix_inversion(merged_array); 
-     	}
-
-
-     	return merged_array;
-     }
-      
-
-    Object[] recursive_count(){
-
-    	if (input.length == 1){
-            Object[] arr = new Object[2];
-            arr[0] = input;
-            arr[1] = 0;
-    		return arr;
-    	}
-    	else {
-    		// Returns a new character sequence constructed from beginIndex index up until endIndex - 1.
-			InversionCount left = new InversionCount( Arrays.copyOfRange(input, 0, input.length/2+1), Arrays.copyOfRange(target, 0, target.length/2+1) );
-			InversionCount right = new InversionCount( Arrays.copyOfRange(input, input.length/2+1,  input.length),  Arrays.copyOfRange(target, target.length/2+1, target.length) ); 
-
-            Object[] left_array = new Object[3];
-            Object[] right_array = new Object[3];
-            left_array[0] = Arrays.copyOfRange(input, 0, input.length/2+1);
-            right_array[0] = Arrays.copyOfRange(input, input.length/2+1,  input.length);
-            left_array[1] = 0;
-            right_array[1] = 0;
-            left_array[2] = Arrays.copyOfRange(target, 0, target.length/2+1);
-            right_array[2] = Arrays.copyOfRange(target, target.length/2+1, target.length);
-
-
-            //3 indexed array : input_sans_inversion, #inversions, target_sans_inversion
-			left <- recursive_count() @
-            token l_array = fix_inversion(token);
-
-
-			right <- recursive_count() @
-            token r_array = fix_inversion(token);
-
-
-			merge( l_array, r_array) @ currentContinuation;
-    
-        }
-
+        boolean test = target_sequence == answer[0];
+        assert test;
 
     }
-
 
 
 	void act(String args[]){
@@ -163,21 +40,14 @@ behavior InversionCount{
         
 		fileReader.close();
 
-		InversionCount kickoff = new InversionCount(input_sequence, tomsFunction());
-		//not ideal since the actor value target is only used here but what evs.
-        Object[] answer = new Object[3];
-		answer = kickoff <- recursive_count();
-		int test = target_sequence == answer[0] && answer[0] == answer[2];
-		assert test;
-		System.out.print("InversionCount : ", answer[1]);
-
-
+		InversionCountWorker kickoff = new InversionCountWorker(input_sequence, tomsFunction());
+	
+    	token answer = kickoff <- recursive_count();
+        test(answer, target_sequence) @ currentContinuation;
+		
+        System.out.print("InversionCount : ", answer );
+      
 	}
-
-
-
-
-
 
 
 
