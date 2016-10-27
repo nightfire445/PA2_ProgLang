@@ -6,6 +6,45 @@ import java.util.Arrays;
 
 */
 
+int[] target_indices(String input, String target) {
+    Queue<Integer> a_indices = new LinkedList<Integer>();
+    Queue<Integer> t_indices = new LinkedList<Integer>();
+    Queue<Integer> c_indices = new LinkedList<Integer>();
+    Queue<Integer> g_indices = new LinkedList<Integer>();
+
+    
+    int[] target_indices = new int[input.length()];
+
+    for (Integer i = 0; i < target.length(); i++) {
+        char c = target.charAt(i);
+        if (c == 'a') {
+            a_indices.add(i);
+        } else if (c == 't') {
+            t_indices.add(i);
+        } else if (c == 'c') {
+            c_indices.add(i);
+        } else if (c == 'g') {
+            g_indices.add(i);
+        }
+    }
+
+    for (Integer i = 0; i < input.length(); i++) {
+        char c = input.charAt(i);
+        if (c == 'a') {
+            target_indices[i] = a_indices.remove();
+        } else if (c == 't') {
+            target_indices[i] = t_indices.remove();
+        } else if (c == 'c') {
+            target_indices[i] = c_indices.remove();
+        } else if (c == 'g') {
+            target_indices[i] = g_indices.remove();
+        }
+    }
+
+    return target_indices;
+}
+
+
 
 behavior InversionCount { 
 
@@ -40,7 +79,7 @@ behavior InversionCount {
         
 		fileReader.close();
 
-		InversionCountWorker kickoff = new InversionCountWorker(input_sequence, tomsFunction());
+		InversionCountWorker kickoff = new InversionCountWorker(input_sequence, target_indices());
 	
     	token answer = kickoff <- recursive_count();
         test(answer, target_sequence) @ currentContinuation;
