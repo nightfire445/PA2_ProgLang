@@ -1,16 +1,30 @@
 module dna;
 import java.io.*;
 import java.util.Arrays;
-
+import java.util.LinkedList;
+import java.util.Queue;
 /* InversionCount.salsa -- Count the number of DNA inversions
 
 */
 
-int[] target_indices(String input, String target) {
-    Queue<Integer> a_indices = new LinkedList<Integer>();
-    Queue<Integer> t_indices = new LinkedList<Integer>();
-    Queue<Integer> c_indices = new LinkedList<Integer>();
-    Queue<Integer> g_indices = new LinkedList<Integer>();
+
+
+
+behavior InversionCount { 
+
+    void test(Object[] answer, char[] target_sequence){
+
+        boolean test = target_sequence == answer[0];
+        assert test;
+
+    }
+
+
+    int[] target_indices(String input, String target) {
+    Queue a_indices = new LinkedList();
+    Queue t_indices = new LinkedList();
+    Queue c_indices = new LinkedList();
+    Queue g_indices = new LinkedList();
 
     
     int[] target_indices = new int[input.length()];
@@ -46,16 +60,6 @@ int[] target_indices(String input, String target) {
 
 
 
-behavior InversionCount { 
-
-    void test(Object[] answer, char[] target_sequence){
-
-        boolean test = target_sequence == answer[0];
-        assert test;
-
-    }
-
-
 	void act(String args[]){
 
 
@@ -79,7 +83,7 @@ behavior InversionCount {
         
 		fileReader.close();
 
-		InversionCountWorker kickoff = new InversionCountWorker(input_sequence, target_indices());
+		InversionCountWorker kickoff = new InversionCountWorker( input_sequence, target_indices(  input_sequence.toString(), target_sequence.toString()  ).toString().toCharArray() );
 	
     	token answer = kickoff <- recursive_count();
         test(answer, target_sequence) @ currentContinuation;
