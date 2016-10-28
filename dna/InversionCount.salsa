@@ -1,8 +1,6 @@
 module dna;
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 /* InversionCount.salsa -- Count the number of DNA inversions
 
 */
@@ -14,11 +12,17 @@ behavior InversionCount {
 
     void test(Object[] answer, char[] target_sequence){
 
-        boolean test = target_sequence == answer[0];
+        boolean test = target_sequence == (char[])answer[0];
         assert test;
 
     }
 
+
+    int extract_inversion_count(Object[] answer){
+
+
+        return (int)answer[1];
+    }
 
     int[] target_indices(String input, String target) {
     Queue a_indices = new LinkedList();
@@ -29,7 +33,7 @@ behavior InversionCount {
     
     int[] target_indices = new int[input.length()];
 
-    for (Integer i = 0; i < target.length(); i++) {
+    for (int i = 0; i < target.length(); i++) {
         char c = target.charAt(i);
         if (c == 'a') {
             a_indices.add(i);
@@ -42,16 +46,16 @@ behavior InversionCount {
         }
     }
 
-    for (Integer i = 0; i < input.length(); i++) {
+    for (int i = 0; i < input.length(); i++) {
         char c = input.charAt(i);
         if (c == 'a') {
-            target_indices[i] = a_indices.remove();
+            target_indices[i] = (int)a_indices.remove();
         } else if (c == 't') {
-            target_indices[i] = t_indices.remove();
+            target_indices[i] = (int)t_indices.remove();
         } else if (c == 'c') {
-            target_indices[i] = c_indices.remove();
+            target_indices[i] = (int)c_indices.remove();
         } else if (c == 'g') {
-            target_indices[i] = g_indices.remove();
+            target_indices[i] = (int)g_indices.remove();
         }
     }
 
@@ -70,26 +74,71 @@ behavior InversionCount {
 
 		}
 
+        try{
+    		Reader fileReader = new FileReader(args[0]);
+            BufferedReader br = new BufferedReader(fileReader);
 
-		Reader fileReader = new FileReader(args[0]);
-		//Input File: 
-		//Input Sequence
-		//Target Sequence
 
-		char[] input_sequence;
-        char[] target_sequence;
-        fileReader.read(input_sequence);
-        fileReader.read(target_sequence);
-        
-		fileReader.close();
+            try{
 
-		InversionCountWorker kickoff = new InversionCountWorker( input_sequence, target_indices(  input_sequence.toString(), target_sequence.toString()  ).toString().toCharArray() );
-	
-    	token answer = kickoff <- recursive_count();
-        test(answer, target_sequence) @ currentContinuation;
+                String input_sequence;
+                String target_sequence;
+
+
+                input_sequence = br.readLine();
+                target_sequence = br.readLine();
+
+                //Input File: 
+                //Input Sequence
+                //Target Sequence
+                String int_array_string = "";
+                int[] int_array = target_indices(  input_sequence, target_sequence  ); 
+                for(int i = 0; i < int_array.length; i++){
+                    int_array_string += int_array[i];
+                }
+                /*
+                standardOutput <- println( input_sequence); 
+                standardOutput <- println( ":"); 
+                standardOutput <- println( int_array_string); 
+                */
+                    
+                
+
+              
+               
+
+                InversionCountWorker kickoff = new InversionCountWorker( input_sequence.toCharArray(), int_array_string.toCharArray() );
+            
+                token answer = kickoff <- recursive_count();
+                //test(answer, target_sequence);
+                
+                System.out.print("InversionCount: ");
+                token numInversions = extract_inversion_count(answer);
+                standardOutput <- println( numInversions ); 
+
+            }
+            catch(Exception e1){
+                System.out.println(e1);
+                System.out.println("Error: Could not read file");
+                System.exit(1);
+            }
+            try{
+                fileReader.close();
+            }
+            catch(Exception e1){
+                System.out.println("Error: Could not close file");
+                System.exit(1);
+            }
+
+
+
+
+        }
+        catch(Exception e1) {
+            System.out.println("Error: Could not open file");
+            System.exit(1);
+        }
 		
-        System.out.print("Input, InversinCount, Target : ");
-        System.out.print(answer); 
       
 	}
 
