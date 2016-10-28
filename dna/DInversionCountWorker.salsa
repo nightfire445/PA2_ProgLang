@@ -1,0 +1,221 @@
+module dna;
+import java.io.*;
+import java.util.Arrays;
+
+/* InversionCount.salsa -- Count the number of DNA inversions
+
+*/
+
+
+behavior InversionCountWorker{
+
+
+//TODO:
+
+// Determine # of actors,
+
+
+ /*
+      The act(...) message handler is invoked by stand-alone
+      theaters automatically and is used to bootstrap salsa
+      programs.
+*/	char[] input;
+    char[] target;
+
+    InversionCountWorker(char[] input, char[] target){
+     	this.input = input;
+        this.target = target;
+
+
+     }
+
+
+    Object[] fix_inversion(Object[] input_array){
+
+
+    	Object[] arr = new Object[3];
+        int inversion_count = 0;
+        char[] input_chars = (char[])input_array[0];
+        char[] target_chars = (char[])input_array[2];
+
+        /*
+        //Input: 3 indexed array : input, #inversions, target
+      System.out.println( this ); 
+      System.out.println( Arrays.toString(input_chars) ); 
+		  System.out.println("\n");
+      System.out.println( this ); 
+    	System.out.println( Arrays.toString(target_chars) );
+      System.out.println( this );  
+    	System.out.println("After sorting:\n"); 
+
+      //*/
+
+        for(int i = 0; i < target_chars.length; i++){ 
+
+            if( ( (i+1) < target_chars.length) && ( (i+1) < input_chars.length)  &&  ((int)target_chars[i] > (int)target_chars[i+1]) ){
+
+                char target_temp = target_chars[i];
+                char input_temp_char = input_chars[i];
+
+                target_chars[i] = target_chars[i+1];
+                target_chars[i+1] = target_temp;
+
+                //need to make sure target and input correspond
+                input_chars[i] = input_chars[i+1];
+                input_chars[i+1] = input_temp_char;
+
+                //begin again at start of the array
+                i = 0;
+                inversion_count = inversion_count + 1;
+
+            }
+
+        }
+      
+      /*
+      System.out.println( this ); 
+      System.out.println( Arrays.toString(input_chars) ); 
+	   	System.out.println("\n");
+      System.out.println( this ); 
+    	System.out.println( Arrays.toString(target_chars) ); 
+    	System.out.println("\n\n"); 
+
+      */
+		  
+
+		  arr[0] = input_chars;
+      arr[1] = inversion_count + (int)input_array[1];
+      arr[2] = target_chars;
+		
+
+     	return arr;
+
+     }
+
+
+    Object[] merge( Object[] left_array , Object[] right_array){
+
+     	int merged_num_inversions = (int)left_array[1] + (int)right_array[1];
+        //Convert to string to concatenate then convert to char array
+        String left_string = new String( (char[])left_array[0]);
+        String right_string = new String((char[])right_array[0]);
+        String left_target_string = new String((char[])left_array[2]);
+        String right_target_string = new String((char[])right_array[2]);
+     	char[] merged_sequence = (left_string + right_string).toCharArray();
+        char[] target_sequence = (left_target_string + right_target_string).toCharArray();
+
+     	Object[] merged_array = new Object[3];
+     	merged_array[0] = merged_sequence;
+     	merged_array[1] = merged_num_inversions;
+        merged_array[2] = target_sequence;
+     	/*
+      System.out.println( this ); 
+      System.out.println( "left string" );
+      System.out.println( this );  
+      System.out.println( left_string ); 
+      System.out.println("\n");
+     	System.out.println( this ); 
+      System.out.println( "right string" );
+      System.out.println( this );  
+      System.out.println( right_string ); 
+      System.out.println("\n");
+      System.out.println( this ); 
+      System.out.println( "merged sequence" );
+      System.out.println( this );  
+      System.out.println( merged_sequence); 
+      System.out.println("\n");
+      
+      */
+ 	//Covers the case when an char on the left (0:N/2) needs to be on the right (N/2+1:N) and vice versa
+
+     	if(merged_sequence.length == target_sequence.length){
+
+     		return fix_inversion(merged_array); 
+     	}
+
+
+     	return merged_array;
+     }
+      
+
+    Object[] recursive_count(){
+
+    	/*	\
+
+    	System.out.println( Arrays.toString(input) ); 
+		System.out.println("\n");
+    	System.out.println( Arrays.toString(target) ); 
+    	System.out.println("\n\n"); 
+
+
+			*/
+    	if (input.length == 1){
+            Object[] arr = new Object[3];
+            arr[0] = input;
+            arr[1] = 0;
+            arr[2] = target;
+    		return arr;
+
+
+    	}
+    	else {
+    		// Returns a new character sequence constructed from beginIndex index up until endIndex - 1.
+			
+
+    		//standardOutput <- println("input:") @ standardOutput <- println(this.input);
+    		//standardOutput <- println("target:") @ standardOutput <- println(this.target);
+	    
+    		Object[] left_array = new Object[3];
+        Object[] right_array = new Object[3];
+
+
+        left_array[0] = Arrays.copyOfRange(input, 0, input.length/2);
+        right_array[0] = Arrays.copyOfRange(input, input.length/2,  input.length);
+        left_array[1] = 0;
+        right_array[1] = 0;
+        left_array[2] = Arrays.copyOfRange(target, 0, target.length/2);
+        right_array[2] = Arrays.copyOfRange(target, target.length/2, target.length);
+
+        
+   
+			InversionCountWorker left = new InversionCountWorker( (char[])left_array[0], (char[])left_array[2]);
+			InversionCountWorker right = new InversionCountWorker( (char[])right_array[0], (char[])right_array[2] ); 
+
+            
+
+
+            //3 indexed array : input_sans_inversion, #inversions, target_sans_inversion
+			left <- recursive_count() @
+            token l_array = fix_inversion(token);
+
+
+			right <- recursive_count() @
+            token r_array = fix_inversion(token);
+
+
+			merge( l_array, r_array) @ currentContinuation;
+    
+        }
+
+
+    }
+
+
+
+	void act(){
+
+
+	    
+	}
+
+
+
+
+
+
+
+
+}
+
+
+
